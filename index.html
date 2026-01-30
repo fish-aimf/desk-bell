@@ -63,12 +63,14 @@
         const bellImage = document.getElementById('bellImage');
 
         // Function to play bell sound
-        function ringBell() {
+        function ringBell(e) {
+            e.preventDefault(); // Prevent default behavior
+            
             // Create a new audio instance each time for spammable clicks
             const bellSound = new Audio('counterbell.mp4a');
             bellSound.volume = 1.0;
             
-            // Play the sound
+            // Play the sound immediately
             bellSound.play().catch(error => {
                 console.log('Audio play failed:', error);
             });
@@ -84,18 +86,14 @@
             }, 300);
         }
 
-        // Add click/touch event listener
-        bellContainer.addEventListener('click', ringBell);
+        // Add both touch and mouse events for maximum responsiveness
+        bellContainer.addEventListener('touchstart', ringBell, { passive: false });
+        bellContainer.addEventListener('mousedown', ringBell);
 
-        // Prevent double-tap zoom on mobile
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function(event) {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
+        // Prevent context menu on long press
+        bellContainer.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
     </script>
 </body>
 </html>
