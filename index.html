@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Desk Bell</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .bell-container {
+            width: 90vw;
+            max-width: 500px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.1s ease;
+        }
+
+        .bell-container:active {
+            transform: scale(0.95);
+        }
+
+        .bell-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+        }
+
+        .ring-animation {
+            animation: ring 0.3s ease-in-out;
+        }
+
+        @keyframes ring {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bell-container" id="bellContainer">
+        <img src="/mnt/user-data/uploads/deskbell.png" alt="Desk Bell" class="bell-image" id="bellImage">
+    </div>
+
+    <audio id="bellSound" preload="auto">
+        <source src="/mnt/user-data/uploads/deskbell.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const bellContainer = document.getElementById('bellContainer');
+        const bellImage = document.getElementById('bellImage');
+        const bellSound = document.getElementById('bellSound');
+
+        // Set volume to maximum
+        bellSound.volume = 1.0;
+
+        // Function to play bell sound
+        function ringBell() {
+            // Reset audio to start if already playing
+            bellSound.currentTime = 0;
+            
+            // Play the sound
+            bellSound.play().catch(error => {
+                console.log('Audio play failed:', error);
+            });
+
+            // Add ring animation
+            bellImage.classList.remove('ring-animation');
+            void bellImage.offsetWidth; // Trigger reflow
+            bellImage.classList.add('ring-animation');
+
+            // Remove animation class after it completes
+            setTimeout(() => {
+                bellImage.classList.remove('ring-animation');
+            }, 300);
+        }
+
+        // Add click/touch event listener
+        bellContainer.addEventListener('click', ringBell);
+
+        // Prevent double-tap zoom on mobile
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>
