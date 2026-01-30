@@ -58,22 +58,15 @@
         <img src="deskbell.png" alt="Desk Bell" class="bell-image" id="bellImage">
     </div>
 
-    <audio id="bellSound" preload="auto">
-        <source src="counterbell.mp4a" type="audio/mp4">
-    </audio>
-
     <script>
         const bellContainer = document.getElementById('bellContainer');
         const bellImage = document.getElementById('bellImage');
-        const bellSound = document.getElementById('bellSound');
-
-        // Set volume to maximum
-        bellSound.volume = 1.0;
 
         // Function to play bell sound
         function ringBell() {
-            // Reset audio to start if already playing
-            bellSound.currentTime = 0;
+            // Create a new audio instance each time for spammable clicks
+            const bellSound = new Audio('counterbell.mp4a');
+            bellSound.volume = 1.0;
             
             // Play the sound
             bellSound.play().catch(error => {
